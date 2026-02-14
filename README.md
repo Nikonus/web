@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎬 AI Video Platform
 
-## Getting Started
 
-First, run the development server:
+![Next.js](https://img.shields.io/badge/Next.js-black?style=flat&logo=nextdotjs)
+![TypeScript](https://img.shields.io/badge/TypeScript-blue?style=flat&logo=typescript)
+![MongoDB](https://img.shields.io/badge/MongoDB-green?style=flat&logo=mongodb)
+![ImageKit](https://img.shields.io/badge/ImageKit-orange?style=flat)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38B2AC?style=flat&logo=tailwindcss)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+A modern full-stack video platform built with **Next.js (App Router)**, **ImageKit CDN**, and a scalable API architecture.  
+This project demonstrates production-level structure with authentication, secure video uploads, protected routes, and modular API handling.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Frontend
+- Next.js (App Router)
+- TypeScript
+- Tailwind CSS
+- Axios (Centralized API Client)
+- Lucide React (Icons)
 
-## Learn More
+### Backend (API Routes)
+- Next.js API Routes
+- MongoDB (Mongoose Models)
+- Session-based Authentication
 
-To learn more about Next.js, take a look at the following resources:
+### Media Handling
+- ImageKit CDN
+- Secure Signed Upload
+- Optimized Video/Image Delivery
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📂 Project Structure
+app/
+├── components/
+│ ├── Header.tsx
+│ ├── VideoComponent.tsx
+│ ├── VideoFeed.tsx
+│ ├── VideoUpload.tsx
+│ └── Notification.tsx
+│
+├── login/
+├── register/
+├── api/
+│ ├── auth/
+│ └── videos/
+│
+lib/
+├── api-client.ts
+└── db.ts
+│
+models/
+└── Video.ts
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## ✨ Features
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- 🔐 Authentication System
+- 📹 Secure Video Upload via ImageKit
+- 🖼 Thumbnail Upload Support
+- 🎞 Video Feed Page
+- 📄 Individual Video Pages
+- 🧩 Modular API Client Architecture
+- 🛡 Middleware-Based Route Protection
+- 📡 Centralized Axios API Handling
+- 📱 Responsive UI
+
+---
