@@ -30,7 +30,7 @@ function RegistrationPage() {
     const checkEmail = async () => {
       try {
         const res = await axiosInstance.get(
-          `/api/check-email?email=${debouncedEmail}`
+         `/api/auth/check-email?email=${debouncedEmail}`
         );
         setEmailExists(res.data.exists);
       } catch (err) {
@@ -67,12 +67,12 @@ function RegistrationPage() {
       setError(null);
       setLoading(true);
 
-      await axiosInstance.post("/api/register", {
-        name,
-        email,
-        phone,
-        password,
-      });
+  await axiosInstance.post("/api/auth/register", {
+  name,
+  email,
+  phone,
+  password,
+});
 
       router.push("/login");
     } catch (err: any) {

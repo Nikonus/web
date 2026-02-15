@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import axiosInstance from "@/lib/axios";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -14,28 +15,38 @@ function LoginPage() {
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (loading) return;
+  if (loading) return;
 
-    if (!email || !password) {
-      setError("Email and password are required");
+  if (!email || !password) {
+    setError("Email and password are required");
+    return;
+  }
+
+  try {
+    setError(null);
+    setLoading(true);
+
+    const res = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+
+    if (res?.error) {
+      setError("Invalid email or password");
       return;
     }
 
-    try {
-      setError(null);
-      setLoading(true);
+    router.push("/dashboard");
 
-      await axiosInstance.post("/api/login", { email, password });
-
-      router.push("/dashboard");
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Login failed");
-    } finally {
-      setLoading(false);
-    }
-  };
+  } catch {
+    setError("Login failed");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <form onSubmit={handleSubmit}>
