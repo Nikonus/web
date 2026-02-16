@@ -53,7 +53,7 @@ export default async function Home() {
   <div className="mx-auto max-w-5xl mt-8 px-6">
     <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6">
       <h3 className="text-xl font-semibold mb-4">
-        Welcome back, {session.user?.name}
+        Welcome back USER
       </h3>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
