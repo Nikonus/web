@@ -3,6 +3,7 @@ import { connectToDatabase } from "@/lib/db";
 import Video, { IVideo } from "@/model/video.model";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
+import { authOptions } from "@/lib/auth";
 
 export async function GET() {
   try {
@@ -25,43 +26,47 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-   const session = await getServerSession();
-   if (!session || !session.user) {
-     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-   }
+    const session = await getServerSession(authOptions); // ⭐ FIX
 
-   await connectToDatabase();
+    if (!session || !session.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
-   const body : IVideo = await request.json();
+    await connectToDatabase();
 
-   if (!body.title || !body.description || !body.videoUrl) {
-     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-   }
+    const body: IVideo = await request.json();
 
-   const videoDate ={
-    ...body,
-    thumbnailUrl: body.thumbnailUrl || "https://ik.imagekit.io/fjgmko3fdz/default-thumbnail.jpg",
-    controls:body.controls?? true,
-    transformations:{
-        crop:body.transformations?.crop?? {
+    if (!body.title || !body.description || !body.videoUrl) {
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
+    const videoData = {
+      ...body,
+      thumbnailUrl:
+        body.thumbnailUrl ||
+        "https://ik.imagekit.io/fjgmko3fdz/default-thumbnail.jpg",
+      controls: body.controls ?? true,
+      transformations: {
+        crop:
+          body.transformations?.crop ?? {
             x: 0,
             y: 0,
             width: 1280,
-            height: 720
-        },
-        resize:body.transformations?.resize?? {
+            height: 720,
+          },
+        resize:
+          body.transformations?.resize ?? {
             width: 1280,
-            height: 720 
-        },
-        rotate: body.transformations?.rotate?? 0
-        
-    }
-   }
+            height: 720,
+          },
+        rotate: body.transformations?.rotate ?? 0,
+      },
+    };
 
-   const newVideo = await Video.create(videoDate);
+    const newVideo = await Video.create(videoData);
 
-   return NextResponse.json(videoDate, { status: 201 });
-} catch (error) {
+    return NextResponse.json(newVideo, { status: 201 });
+  } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
