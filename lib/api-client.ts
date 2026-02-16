@@ -1,7 +1,5 @@
 import axios, { AxiosInstance, AxiosError } from "axios";
-import { IVideo } from "@/model/video.model";
-
-export type VideoFormData = Omit<IVideo, "_id">;
+import { VideoDTO, CreateVideoDTO } from "@/types/video";
 
 class ApiClient {
   private axiosInstance: AxiosInstance;
@@ -9,13 +7,10 @@ class ApiClient {
   constructor() {
     this.axiosInstance = axios.create({
       baseURL: "/api",
-      withCredentials: true, // required for cookies / NextAuth
-      headers: {
-        "Content-Type": "application/json",
-      },
+      withCredentials: true,
+      headers: { "Content-Type": "application/json" },
     });
 
-    // Optional: Response interceptor for centralized error handling
     this.axiosInstance.interceptors.response.use(
       (response) => response,
       (error: AxiosError) => {
@@ -31,14 +26,14 @@ class ApiClient {
     );
   }
 
-  async getVideos(): Promise<IVideo[]> {
-    const { data } = await this.axiosInstance.get<IVideo[]>("/videos");
+  async getVideos(): Promise<VideoDTO[]> {
+    const { data } = await this.axiosInstance.get<VideoDTO[]>("/video");
     return data;
   }
 
-  async createVideo(videoData: VideoFormData): Promise<IVideo> {
-    const { data } = await this.axiosInstance.post<IVideo>(
-      "/videos",
+  async createVideo(videoData: CreateVideoDTO): Promise<VideoDTO> {
+    const { data } = await this.axiosInstance.post<VideoDTO>(
+      "/video",
       videoData
     );
     return data;
