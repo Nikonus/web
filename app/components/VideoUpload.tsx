@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import FileUpload from "@/app/components/FileUpload";
 import { apiClient } from "@/lib/api-client";
 import { useRouter } from "next/navigation";
@@ -41,10 +41,6 @@ function VideoUploadForm() {
       setVideoUrl(null);
       setThumbnailUrl(null);
 
-      // Redirect to dashboard after 2 seconds
-      setTimeout(() => {
-        router.push("/dashboard");
-      }, 2000);
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
@@ -55,6 +51,17 @@ function VideoUploadForm() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+  if (!success) return;
+
+  const timer = setTimeout(() => {
+    router.replace("/dashboard/videos");
+router.refresh(); // replace avoids history stacking
+  }, 2000);
+
+  return () => clearTimeout(timer); // VERY IMPORTANT
+}, [success, router]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50 py-12 px-4">
