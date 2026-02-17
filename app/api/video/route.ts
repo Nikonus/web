@@ -4,6 +4,7 @@ import Video, { IVideo } from "@/model/video.model";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { authOptions } from "@/lib/auth";
+import { revalidatePath } from "next/cache";
 
 export async function GET() {
   try {
@@ -26,7 +27,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const session = await getServerSession(authOptions); // ⭐ FIX
+    const session = await getServerSession(authOptions);
 
     if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -47,27 +48,20 @@ export async function POST(request: Request) {
         "https://ik.imagekit.io/fjgmko3fdz/default-thumbnail.jpg",
       controls: body.controls ?? true,
       transformations: {
-        crop:
-          body.transformations?.crop ?? {
-            x: 0,
-            y: 0,
-            width: 1280,
-            height: 720,
-          },
-        resize:
-          body.transformations?.resize ?? {
-            width: 1280,
-            height: 720,
-          },
+        crop: body.transformations?.crop ?? { x: 0, y: 0, width: 1280, height: 720 },
+        resize: body.transformations?.resize ?? { width: 1280, height: 720 },
         rotate: body.transformations?.rotate ?? 0,
       },
     };
 
     const newVideo = await Video.create(videoData);
 
+    // ⭐⭐ THIS IS THE MISSING PART ⭐⭐
+    revalidatePath("/dashboard/videos");
+    revalidatePath("/dashboard");
+
     return NextResponse.json(newVideo, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
- 
