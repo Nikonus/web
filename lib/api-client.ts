@@ -30,6 +30,9 @@ class ApiClient {
     const { data } = await this.axiosInstance.get<VideoDTO[]>("/video");
     return data;
   }
+  async deleteVideo(id: string): Promise<void> {
+  await this.axiosInstance.delete(`/video/${id}`);
+}
 
   async createVideo(videoData: CreateVideoDTO): Promise<VideoDTO> {
     const { data } = await this.axiosInstance.post<VideoDTO>(
@@ -39,5 +42,6 @@ class ApiClient {
     return data;
   }
 }
+
 
 export const apiClient = new ApiClient();
