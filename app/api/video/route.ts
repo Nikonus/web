@@ -5,6 +5,8 @@ import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { authOptions } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { generateVideoMeta } from "@/lib/gemini";
+
 
 export async function GET() {
   try {
@@ -41,18 +43,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    const videoData = {
-      ...body,
-      thumbnailUrl:
-        body.thumbnailUrl ||
-        "https://ik.imagekit.io/fjgmko3fdz/default-thumbnail.jpg",
-      controls: body.controls ?? true,
-      transformations: {
-        crop: body.transformations?.crop ?? { x: 0, y: 0, width: 1280, height: 720 },
-        resize: body.transformations?.resize ?? { width: 1280, height: 720 },
-        rotate: body.transformations?.rotate ?? 0,
-      },
-    };
+   const videoData = {
+  ...body,
+  thumbnailUrl:
+    body.thumbnailUrl ||
+    "https://ik.imagekit.io/fjgmko3fdz/default-thumbnail.jpg",
+
+  aiDescription: body.aiDescription ?? null,
+  tags: body.tags ?? [],
+
+  transformations: {
+    crop: body.transformations?.crop ?? { x: 0, y: 0, width: 1280, height: 720 },
+    resize: body.transformations?.resize ?? { width: 1280, height: 720 },
+    rotate: body.transformations?.rotate ?? 0,
+  },
+};
 
     const newVideo = await Video.create(videoData);
 
