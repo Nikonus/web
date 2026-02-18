@@ -12,12 +12,16 @@ export interface IVideo {
   description: string;
   videoUrl: string;
   thumbnailUrl: string;
+  aiDescription?: string;
+tags?: string[];
 
   // ⭐ Added analytics field
   views: number;
 
   createdAt?: Date;
   updatedAt?: Date;
+
+  
 
   controls?: {
     play: boolean;
@@ -40,6 +44,8 @@ export interface IVideo {
     };
     rotate?: number;
   };
+
+  
 }
 
 const videoSchema = new Schema<IVideo>(
@@ -62,6 +68,15 @@ const videoSchema = new Schema<IVideo>(
       seek: { type: Boolean, default: true },
       volume: { type: Boolean, default: true },
     },
+    aiDescription: {
+  type: String,
+},
+
+tags: [
+  {
+    type: String,
+  },
+],
 
     transformations: {
       crop: {
@@ -77,6 +92,7 @@ const videoSchema = new Schema<IVideo>(
       rotate: { type: Number, default: 0 },
     },
   },
+  
   { timestamps: true }
 );
 
