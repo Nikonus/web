@@ -5,8 +5,11 @@ import FileUpload from "@/app/components/FileUpload";
 import { apiClient } from "@/lib/api-client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import axios from "axios";
+import Video, { IVideo } from "@/model/video.model";
 
 function VideoUploadForm() {
+  console.log("VideoUploadForm rendered");
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -15,7 +18,8 @@ function VideoUploadForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-
+const [tags, setTags] = useState<string[]>([]);
+const [loadingAI, setLoadingAI] = useState(false);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -29,11 +33,12 @@ function VideoUploadForm() {
 
     try {
       await apiClient.createVideo({
-        title,
-        description,
-        videoUrl,
-        thumbnailUrl,
-      });
+  title,
+  description,
+  videoUrl,
+  thumbnailUrl,
+  tags,
+});
 
       setSuccess(true);
       setTitle("");
@@ -51,7 +56,31 @@ function VideoUploadForm() {
       setLoading(false);
     }
   };
+const handleGenerateAI = async () => {
+  console.log("AI triggered, title:", title);
 
+  if (!title) {
+    console.log("No title, skipping AI");
+    return;
+  }
+
+  try {
+    setLoadingAI(true);
+
+    const res = await axios.post("/api/ai/generate-meta", {
+      title,
+    });
+
+    console.log("AI response:", res.data);
+
+    setDescription(res.data.description);
+    setTags(res.data.tags);
+  } catch (err: any) {
+    console.error("AI Error:", err.response?.data || err.message);
+  } finally {
+    setLoadingAI(false);
+  }
+};
   useEffect(() => {
   if (!success) return;
 
@@ -187,6 +216,10 @@ router.refresh(); // replace avoids history stacking
               </label>
               <textarea
                 rows={4}
+        onFocus={() => {
+    console.log("FOCUS WORKING");
+    handleGenerateAI();
+  }}
                 className="w-full border-2 border-gray-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 p-3 rounded-xl transition-all duration-300 outline-none resize-none"
                 placeholder="Tell viewers about your video..."
                 value={description}
